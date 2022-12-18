@@ -3,6 +3,8 @@ In vitro and in vivo experiments with *Escherichia coli* have shown that the Mfd
 
 This repository contains the data analysis workflow.
 
+![Workflow](/results/figs/workflow.png "Workflow")
+
 <br>
 
 ## Installation
