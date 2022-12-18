@@ -1,3 +1,4 @@
+SRA_PROJECT_ID: PRJNA912722
 
 sample: 
   - "SmgMfdUMIndCPDR1"
@@ -32,13 +33,15 @@ meta:
     time: 5min
     induced: True
     replicate: 1
+    SRA: SRR22753300
   SmgWTUMInduCPDR2:
     title: WTind_5m_R2
     product: CPD
     strain: WT
     time: 5min
     induced: True
-    replicate: 2  
+    replicate: 2
+    SRA: SRR22753299
   SmgMfdUMIndCPDR1:
     title: MfdInd_5m_R1
     product: CPD
@@ -46,6 +49,7 @@ meta:
     time: 5min
     induced: True
     replicate: 1
+    SRA: SRR22753298
   SmgMfdUMIndCPDR2:
     title: MfdInd_5m_R2
     product: CPD
@@ -53,6 +57,7 @@ meta:
     time: 5min
     induced: True
     replicate: 2
+    SRA: SRR22753297
   SmgUvrDUMInCPDR1:
     title: uvrDind_5m_R1
     product: CPD
@@ -60,6 +65,7 @@ meta:
     time: 5min
     induced: True
     replicate: 1
+    SRA: SRR22753296
   SmgUvrDUMInCPDR2:
     title: uvrDind_5m_R2
     product: CPD
@@ -67,6 +73,7 @@ meta:
     time: 5min
     induced: True
     replicate: 2
+    SRA: SRR22753295
   SmUvrMfdUMInCPD1:
     title: uvrDmfdInd_5m_R1
     product: CPD
@@ -74,6 +81,7 @@ meta:
     time: 5min
     induced: True
     replicate: 1
+    SRA: SRR22753294
   SmUvrMfdUMInCPD2:
     title: uvrDmfdInd_5m_R2
     product: CPD
@@ -81,6 +89,8 @@ meta:
     time: 5min
     induced: True
     replicate: 2
+    SRA: SRR22753293
+
 
 
 
