@@ -1,0 +1,121 @@
+
+sample: 
+  - "SmgMfdUMIndCPDR1"
+  - "SmgMfdUMIndCPDR2"
+  - "SmgUvrDUMInCPDR1"
+  - "SmgUvrDUMInCPDR2"
+  - "SmgWTUMInduCPDR1"
+  - "SmgWTUMInduCPDR2"
+  - "SmUvrMfdUMInCPD1"
+  - "SmUvrMfdUMInCPD2"
+
+readLength:
+  - "12"
+
+readLengthForNucleotide:
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+  - 13
+
+strand:
+  - "plus"
+  - "minus"
+
+meta: 
+  SmgWTUMInduCPDR1:
+    title: WTind_5m_R1
+    product: CPD
+    strain: WT
+    time: 5min
+    induced: True
+    replicate: 1
+  SmgWTUMInduCPDR2:
+    title: WTind_5m_R2
+    product: CPD
+    strain: WT
+    time: 5min
+    induced: True
+    replicate: 2  
+  SmgMfdUMIndCPDR1:
+    title: MfdInd_5m_R1
+    product: CPD
+    strain: mfd
+    time: 5min
+    induced: True
+    replicate: 1
+  SmgMfdUMIndCPDR2:
+    title: MfdInd_5m_R2
+    product: CPD
+    strain: mfd
+    time: 5min
+    induced: True
+    replicate: 2
+  SmgUvrDUMInCPDR1:
+    title: uvrDind_5m_R1
+    product: CPD
+    strain: uvrD
+    time: 5min
+    induced: True
+    replicate: 1
+  SmgUvrDUMInCPDR2:
+    title: uvrDind_5m_R2
+    product: CPD
+    strain: uvrD
+    time: 5min
+    induced: True
+    replicate: 2
+  SmUvrMfdUMInCPD1:
+    title: uvrDmfdInd_5m_R1
+    product: CPD
+    strain: uvrD_mfd
+    time: 5min
+    induced: True
+    replicate: 1
+  SmUvrMfdUMInCPD2:
+    title: uvrDmfdInd_5m_R2
+    product: CPD
+    strain: uvrD_mfd
+    time: 5min
+    induced: True
+    replicate: 2
+
+
+
+
+
+srr: 
+  enabled: False
+  codes:
+    - ""
+
+# Genome  parameters 
+
+genome_download: False
+
+bowtie2_build: True
+
+# build: "nzCP054795" 
+build: "CP001663" 
+project: "myco"
+
+species: ""
+
+datatype: ""
+
+release: ""
+
+#######
+
+filter: "'^'"
+
+
+boquila:
+  run: True
+  seed: 1
+  sens: 4
+
+adaptor_se: "-a GGCTCAGTTCGTATGAGTGCCGNNNNNNNN"
+

@@ -1,0 +1,8 @@
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - samtools ==1.10
+  - bedtools =2.29.0
+  - ucsc-bedgraphtobigwig =377

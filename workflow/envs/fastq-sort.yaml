@@ -1,0 +1,4 @@
+channels:
+  - bioconda
+dependencies:
+  - fastq-tools ==0.8.3

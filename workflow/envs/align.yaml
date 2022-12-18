@@ -1,0 +1,8 @@
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - bowtie2 ==2.4.5  
+  - samtools ==1.10
+  - tbb ==2020.2

@@ -1,0 +1,37 @@
+
+sample: 
+  - "SRR5983958"
+  - "SRR5983959"
+  - "SRR5983960"
+  - "SRR5983961"
+  - "SRR5983962"
+  - "SRR5983963"
+
+meta: 
+  SRR5983958:
+    title: 16h_1
+    time: 16h
+    replicate: 1
+  SRR5983959:
+    title: 16h_2
+    time: 16h
+    replicate: 2
+  SRR5983960:
+    title: 26h_1
+    time: 26h
+    replicate: 1
+  SRR5983961:
+    title: 26h_2
+    time: 26h
+    replicate: 2
+  SRR5983962:
+    title: 39h_1
+    time: 39h
+    replicate: 1
+  SRR5983963:
+    title: 39h_2
+    time: 39h
+    replicate: 2
+
+build: "CP001663" 
+project: "myco"

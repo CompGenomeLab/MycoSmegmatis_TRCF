@@ -1,0 +1,7 @@
+name: bam_correlation
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - deeptools ==3.1.3
