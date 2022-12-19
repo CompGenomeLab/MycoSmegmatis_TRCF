@@ -17,6 +17,9 @@ def getSRR(sample, srrList, sampleList):
         
     return srrList[idx]
 
+def getSRA_ID(config, sample):
+    return config['meta']['sample']['SRA']
+
 def isSingle(sample, sampleList, srrEnabled, srrList, sample_dir):
 
     if srrEnabled:
@@ -369,6 +372,7 @@ wildcard_constraints:
 #         lambda w: allInput(config["build"], config["sample"], 
 #             config["srr"]["enabled"], config["srr"]["codes"]),
  
+include: "sra.smk"
 include: "fastqc.smk"
 
 include: "genome_build.smk"
