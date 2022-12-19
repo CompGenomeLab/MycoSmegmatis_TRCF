@@ -4,12 +4,10 @@ import warnings
 import os
 import subprocess
 import re
-# configfile: "config/config_XR_initial.yaml" 
 
 ################### Helper Functions ###########################################
 
 def getSRR(sample, srrList, sampleList):
-
     try:
         idx = sampleList.index(sample)
     except:
@@ -18,16 +16,12 @@ def getSRR(sample, srrList, sampleList):
     return srrList[idx]
 
 def getSRA_ID(config, sample):
-    return config['meta']['sample']['SRA']
+    return config['meta'][sample]['SRA']
 
 def isSingle(sample, sampleList, srrEnabled, srrList, sample_dir):
-
     if srrEnabled:
-
         mySRR = getSRR(sample, srrList, sampleList)
-
         if mySRR == "NA":
-
             single = f"{sample_dir}{sample}.fastq.gz"
             pairedR1 = f"{sample_dir}{sample}_R1.fastq.gz"
             paired1 = f"{sample_dir}{sample}_1.fastq.gz"
@@ -43,11 +37,8 @@ def isSingle(sample, sampleList, srrEnabled, srrList, sample_dir):
             mySRR = mySRR.split(":")[0]
 
         shellCommand = f'fastq-dump -X 1 -Z --split-spot {mySRR} | wc -l'
-        #print(shellCommand)
         p=subprocess.getoutput(shellCommand)
-        #print(p)
         lineNum = int(p.split("\n")[2])
-        #print(lineNum)
 
         if lineNum == 4:
             return True
@@ -55,7 +46,6 @@ def isSingle(sample, sampleList, srrEnabled, srrList, sample_dir):
             return False
 
     else:
-
         single = f"{sample_dir}{sample}.fastq.gz"
         pairedR1 = f"{sample_dir}{sample}_R1.fastq.gz"
         paired1 = f"{sample_dir}{sample}_1.fastq.gz"
@@ -68,7 +58,6 @@ def isSingle(sample, sampleList, srrEnabled, srrList, sample_dir):
             raise(ValueError(f"{paired1}, {pairedR1}, or {single} not found..."))
 
 def getPaired(sample, sampleList, read, sample_dir):
-
     pairedR1 = f"{sample_dir}{sample}_R1.fastq.gz"
     paired1 = f"{sample_dir}{sample}_1.fastq.gz"
     
@@ -85,28 +74,24 @@ def getPaired(sample, sampleList, read, sample_dir):
         return f"{sample_dir}{sample}_2.fastq.gz"
 
 def input4filter(wildcards, sampleList, srrEnabled, srrList):
-
     if isSingle(wildcards.samples, sampleList, srrEnabled, srrList, "resources/samples/"):
         return "results/{sample}/{sample}_se.bed"
     else:    
         return "results/{sample}/{sample}_pe.bed"
 
 def input4filter_sim(wildcards, sampleList, srrEnabled, srrList):
-
     if isSingle(wildcards.samples, sampleList, srrEnabled, srrList, "resources/samples/"):
         return "results/simulation/{sample}/{sample}.bed"
     else:    
         return "results/simulation/{sample}/{sample}.bed"
 
 def input4fasta(wildcards, sampleList, srrEnabled, srrList):
-
     if isSingle(wildcards.samples, "input", sampleList, srrEnabled, srrList, "resources/input/"):
         return "results/input/{sample}/{sample}_se.bed"
     else:    
         return "results/input/{sample}/{sample}_pe.bed"
 
 def input4PCA(sampleList, srrEnabled, srrList, build, duplicate):
-
     inputList = []
     for sample in sampleList:
 
@@ -182,7 +167,6 @@ def input4nucTable():
 
 
 def getMotif(sample, product):
-
     if product.lower() in ["oxaliplatin", "cisplatin", "bpdedg"]: 
         return "'.{4}(g|G){2}.{4}'"
     
@@ -193,7 +177,6 @@ def getMotif(sample, product):
         return "'.{10}'"
 
 def getDinuc(sample, product):
-
     if product.lower() in ["oxaliplatin", "cisplatin"]: 
         return "'GG'"
     
@@ -209,8 +192,13 @@ def getSampleFields(sample):
         l.append(str(sample[key]))
     return '\t'.join(l)
 
-def getInput(sample, inputExist, inputList, inputIdx, sampleList, build):
+def rna_input4merge(sampleList):
+    inputList = []
+    for sample in sampleList:
+        inputList.append(f"results/rna/pe/mapped/{sample}.tsv")
+    return inputList
 
+def getInput(sample, inputExist, inputList, inputIdx, sampleList, build):
     if inputExist:
         inpDict={}
         for inp_idx in range(len(inputIdx)):
@@ -239,7 +227,6 @@ def getInput(sample, inputExist, inputList, inputIdx, sampleList, build):
         return f"resources/ref_genomes/{build}/genome.ron" 
 
 def lineNum(file):
-    
     linenum = 0
     if os.path.exists(file):
         with open(file) as f:
@@ -256,7 +243,6 @@ def lineNum(file):
     return linenum
 
 def mappedReads(*files):
-
     lineNumber = 0
     for file in files:
         lineNumber += lineNum(str(file))
@@ -271,140 +257,56 @@ def allInput(config):
     strands = config['strand']
     readLengths = config['readLength']
     readLengthForNucleotide = config['readLengthForNucleotide']
-
-
+    inputList = []
     strains = set()
+
     for sample in sampleList:
         strains.add(config['meta'][sample]['strain'])
 
-    inputList = []
-
-    # gtf = report(f"resources/ref_genomes/{build}/genome.gtf", category="genome")
-
-    # inputList.append(f"resources/ref_genomes/{build}/operons.bed") 
+    for sample in sampleList:
+        sample_dir = f"results/{sample}/"
+        inputList.append(f"{sample_dir}{sample}_report.txt")
+        # inputList.append(f"{sample_dir}random/{sample}_random.bed")
+    
+    for strand in strands:  
+        for strain in list(strains):
+            inputList.append(f"results/mergedReplicates/{strain}_{strand}.bw")
+        
     inputList.append(f"resources/ref_genomes/{build}/singletons.bed") 
     inputList.append(f"resources/ref_genomes/{build}/genome.gtf") 
     inputList.append(f"results/{project}/mappableReads.bed") 
-
-    duplications = ['nodedup', 'dedup']
-
-    for sample in sampleList:
-        sample_dir = f"results/{sample}/"
-
-        
-        inputList.append(f"{sample_dir}{sample}_removedDup.fastq")
-        inputList.append(f"{sample_dir}{sample}_cut.fastq")
-        inputList.append(f"{sample_dir}{sample}_length_distribution.pdf")
-        inputList.append(f"{sample_dir}{sample}_dinuc.pdf")
-        inputList.append(f"{sample_dir}{sample}_sorted.bam")
-        inputList.append(f"{sample_dir}{sample}_TSNTS.tsv")
-        inputList.append(f"{sample_dir}{sample}_report.txt")
-        # inputList.append(f"{sample_dir}uniq/{sample}.bed")
-        inputList.append(f"{sample_dir}{sample}_bedLength.txt")
-        inputList.append(f"{sample_dir}random/{sample}_random.bed")
-        inputList.append(f"results/{project}/readCountsTSNTS.tsv")
-        inputList.append(f"results/{project}/random/readCountsTSNTS.tsv")
-        inputList.append(f"results/{project}/mappable_TSNTS.tsv")
-        inputList.append(f"results/{project}/nucleotide_content.tsv")
-        inputList.append(f"results/{project}/length.tsv")
-        inputList.append(f"{sample_dir}{sample}_TSNTS.tsv")
-        for strand in strands:
-            inputList.append(f"{sample_dir}{sample}_{strand}.bw")
-            for strain in list(strains):
-                inputList.append(f"results/mergedReplicates/{strain}_{strand}.bw")
-            
-            # for readLength in readLengths:
-            #     inputList.append(f"{sample_dir}lengthSeparated/{sample}_{strand}_{readLength}.bw")
-        # for readLength in readLengthForNucleotide:
-        #     inputList.append(f"{sample_dir}lengthSeparated/{sample}_{readLength}_organized.txt")
-        #     inputList.append(f"{sample_dir}lengthSeparated/{sample}_{readLength}_dinuc_organized.txt")
-
-        # for duplication in duplications:
-            # inputList.append(f"{sample_dir}{sample}_{duplication}_sorted_nucleotideTable.pdf")
-            # inputList.append(f"{sample_dir}{sample}_{duplication}_sorted_dinucleotideTable.pdf")
-            # inputList.append(f"{sample_dir}simulation/{sample}_{duplication}_nucleotideTable.pdf")
-            # inputList.append(f"{sample_dir}simulation/{sample}_{duplication}_dinucleotideTable.pdf")
-            # inputList.append(f"{sample_dir}{sample}_{duplication}_length_distribution.pdf")
-            # inputList.append(f"{sample_dir}{sample}_{duplication}_fslp.bw")
-            # inputList.append(f"{sample_dir}{sample}_{duplication}_fslm.bw")
-            # inputList.append(f"{sample_dir}simulation/{sample}_{duplication}_fslp.bw")
-            # inputList.append(f"{sample_dir}simulation/{sample}_{duplication}_fslm.bw")
-            # inputList.append(f"results/readCountsTSNTS_{duplication}.tsv")
-            # inputList.append(f"results/plots/{sample}_{duplication}_TSSprofile.png")
-            # inputList.append(f"results/plots/plot_heatmap/{sample}_{duplication}_heatmap.png")
-            
-            # inputList.append(f"results/plots/simulation/{sample}_{duplication}_TSSprofile.png")
-
-            
-    #         for strand in ['plus', 'minus']:
-    #             inputList.append(f"{sample_dir}{sample}_{duplication}_sorted_{strand}.bed") 
-    #             inputList.append(f"{sample_dir}{sample}_{duplication}_sorted_located_{strand}.bed")
-    #             inputList.append(f"{sample_dir}{sample}_{duplication}_sorted_located_{strand}_matrix.gz")
-
-            # inputList.append(f"results/scatterplot_PearsonCorr_bigwigScores_{duplication}.pdf")
-            # inputList.append(f"results/PearsonCorr_bigwigScores_{duplication}.tab")
-            # inputList.append(f"results/heatmap_SpearmanCorr_readCounts_{duplication}.pdf")
-            # inputList.append(f"results/SpearmanCorr_readCounts_{duplication}.tab")
-            # inputList.append(f"results/PCA_readCounts_{duplication}.pdf")
-            # inputList.append(f"results/readCountsTSNTS_{duplication}.tsv")
-            # inputList.append(f"results/simulation/readCountsTSNTS_{duplication}.tsv")
-
-    # for i in inputList:
-    #     print(i)    
+    inputList.append(f"results/{project}/random/readCountsTSNTS.tsv")
+    inputList.append(f"results/{project}/mappable_TSNTS.tsv")
+    inputList.append(f"results/{project}/nucleotide_content.tsv")
+    inputList.append(f"results/{project}/length.tsv")
+    inputList.append(f"results/{project}/readCountsTSNTS.tsv")
 
     return inputList
-
 
 def chromosome():
     keyword = config['build']
     initialTwo = keyword[0:2].upper()
     chromosome = initialTwo + '_' + keyword[2:] + '.1'
     return chromosome
-
-
-
-
-wildcard_constraints:
-    duplicate='dedup|nodedup'
-
-# rule all:
-#     input:
-#         lambda w: allInput(config["build"], config["sample"], 
-#             config["srr"]["enabled"], config["srr"]["codes"]),
  
 include: "sra.smk"
 include: "fastqc.smk"
-
 include: "genome_build.smk"
-    
 include: "prepareSingletons.smk"
-
 include: "faidx.smk"
 include: "genome_idx2ron.smk"
 include: "fastq-sort.smk"
 include: "removeDuplicatesAtFastq.smk"
 include: "adaptor_handling.smk"
-
 include: "length_distribution.smk"
 include: "plot_length.smk"
-
 include: "nucleotide_table.smk"
-
-
 include: "align.smk"
 include: "bed2geneCounts_tsnts.smk"
 include: "report_stats.smk"
 include: "check_presence.smk"
-# include: "bedGraphToBigWig.smk"
-# include: "simulation.smk"
-# include: "nucleotide_table_sim.smk"
-# include: "bam_correlation.smk"
-# include: "bam_corr_graphs.smk"
 include: "prepareOperonBed.smk"
 include: "computeMatrix.smk"
-# include: "plotProfile.smk"
-
-
-
+include: "rna.smk"
 
 ################################################################################

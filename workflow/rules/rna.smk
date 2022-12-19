@@ -16,18 +16,18 @@ rule get_fastq_pe_gz:
     wrapper:
         "v1.19.1/bio/sra-tools/fasterq-dump"
 
-rule trimmomatic_pe:
+rule trimmomatic_pe_rna:
     input:
-        r1="results/rna/pe/raw/{sample}_1.fastq.gz",
-        r2="results/rna/pe/raw/{sample}_2.fastq.gz"
+        r1="results/rna/pe/raw/{rna_sample}_1.fastq.gz",
+        r2="results/rna/pe/raw/{rna_sample}_2.fastq.gz"
     output:
-        r1="results/rna/pe/trimmed/{sample}_1.fastq.gz",
-        r2="results/rna/pe/trimmed/{sample}_2.fastq.gz",
+        r1="results/rna/pe/trimmed/{rna_sample}_1.fastq.gz",
+        r2="results/rna/pe/trimmed/{rna_sample}_2.fastq.gz",
         # reads where trimming entirely removed the mate
-        r1_unpaired="trimmed/{sample}_1.unpaired.fastq.gz",
-        r2_unpaired="trimmed/{sample}_2.unpaired.fastq.gz"
+        r1_unpaired="trimmed/{rna_sample}_1.unpaired.fastq.gz",
+        r2_unpaired="trimmed/{rna_sample}_2.unpaired.fastq.gz"
     log:
-        "logs/trimmomatic/{sample}.log"
+        "logs/trimmomatic/{rna_sample}.log"
     params:
         # list of trimmers (see manual)
         trimmer=["TRAILING:3"],
@@ -46,9 +46,9 @@ rule trimmomatic_pe:
     wrapper:
         "v1.19.1/bio/trimmomatic/pe"
 
-rule bowtie2:
+rule bowtie2_rna:
     input:
-        sample=[rules.trimmomatic_pe.output.r1, rules.trimmomatic_pe.output.r2],
+        sample=[rules.trimmomatic_pe_rna.output.r1, rules.trimmomatic_pe_rna.output.r2],
         idx=multiext(
             f"resources/ref_genomes/{build_}/Bowtie2/genome",
             ".1.bt2",
@@ -59,9 +59,9 @@ rule bowtie2:
             ".rev.2.bt2",
         ),
     output:
-        "results/rna/pe/mapped/{sample}.bam",
+        "results/rna/pe/mapped/{rna_sample}.bam",
     log:
-        "logs/bowtie2/rna/{sample}.log",
+        "logs/bowtie2/rna/{rna_sample}.log",
     params:
         extra="",  # optional parameters
     threads: 8  # Use at least two threads
@@ -71,11 +71,11 @@ rule bowtie2:
     wrapper:
         "v1.19.1/bio/bowtie2/align"
 
-rule bam2bed_pe:
-    input: rules.bowtie2.output,
-    output: "results/rna/pe/mapped/{sample}.bed"
+rule bam2bed_pe_rna:
+    input: rules.bowtie2_rna.output,
+    output: "results/rna/pe/mapped/{rna_sample}.bed"
     log:
-        "logs/bam2bed/{sample}.log",
+        "logs/bam2bed/{rna_sample}.log",
     resources:
         memory="16GB",
         cpu=1
@@ -91,12 +91,12 @@ rule bam2bed_pe:
 
 rule bed2geneCounts_rna:
     input:
-        reads=rules.bam2bed_pe.output,
+        reads=rules.bam2bed_pe_rna.output,
         genes=f"resources/ref_genomes/{build_}/genes.bed",
-    output: "results/rna/pe/mapped/{sample}.tsv",
+    output: "results/rna/pe/mapped/{rna_sample}.tsv",
     params:
-        fields = lambda w: getSampleFields(config["meta"][w.sample])
-    log: "logs/bed2geneCounts_rna/{sample}.log",
+        fields = lambda w: getSampleFields(config["rna_meta"][w.rna_sample])
+    log: "logs/bed2geneCounts_rna/{rna_sample}.log",
     resources:
         memory="16GB",
         cpu=1
@@ -118,9 +118,9 @@ rule bed2geneCounts_rna:
         """
         )
 
-rule mergeTSNTScounts:
+rule mergeTSNTScounts_rna:
     input:
-        lambda w: input4merge(config["sample"]),
+        lambda w: rna_input4merge(config["rna_sample"]),
     output:
         out=f"results/rna/readCounts.tsv",
     log: f"logs/rna/readCounts.log",

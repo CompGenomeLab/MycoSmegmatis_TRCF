@@ -6,8 +6,16 @@ rule genome_build:
     # output: "resources/ref_genomes/build/Bowtie2/genome"
     params: 
         base = f"resources/ref_genomes/{build}/Bowtie2/genome"
-    output:
-        index_1 = f"resources/ref_genomes/{build}/Bowtie2/genome.1.bt2"
+    output: 
+        idx=multiext(
+            f"resources/ref_genomes/{build}/Bowtie2/genome",
+            ".1.bt2",
+            ".2.bt2",
+            ".3.bt2",
+            ".4.bt2",
+            ".rev.1.bt2",
+            ".rev.2.bt2",
+        ),
     log: f"logs/rule/analysis/{build}/log/bowtie2_build.log"
     benchmark: f"logs/rule/analysis/{build}/log/bowtie2_build.benchmark.txt"
     conda:
