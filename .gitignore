@@ -1,5 +1,6 @@
 **/.DS_Store
 .snakemake
 results
-logs
+**/*.err
+**/*.log
 tmp
