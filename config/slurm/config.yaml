@@ -1,4 +1,3 @@
 jobs: 220
-# cluster: "sbatch -p genomics -J {rule}.job --nodes=1 --mem {resources.memory} -c {resources.cpu} --ntasks 1 -e logs/cluster/{rule}_%A.err --output=/dev/null"
-# cluster: "sbatch -p genomics -J {rule}.job --nodes=1 --mem {resources.memory} -c {resources.cpu} --ntasks 1 -e logs/cluster/{rule}_%A.err --output=/dev/null"
-cluster: "sbatch -p cpuN4p0 -J {rule}.job --nodes=1 --mem {resources.memory} -c {resources.cpu} --ntasks 1 -e logs/cluster/{rule}_%A.err --output=/dev/null"
+cluster: "sbatch -p genomics -J {rule}.job --nodes=1 --mem {resources.memory} -c {resources.cpu} --ntasks 1 -e logs/cluster/{rule}_%A.err --output=/dev/null"
+# cluster: "sbatch -p cpuN4p0 -J {rule}.job --nodes=1 --mem {resources.memory} -c {resources.cpu} --ntasks 1 -e logs/cluster/{rule}_%A.err --output=/dev/null"

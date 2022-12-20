@@ -1,4 +1,5 @@
 build_ = config["build"]
+scratch_dir = config['scratch_dir']
 
 rule get_fastq_pe_gz:
     output:
@@ -8,7 +9,7 @@ rule get_fastq_pe_gz:
     log:
         "logs/pe/{accession}.gz.log"
     params:
-        extra="--skip-technical --temp /scratch"
+        extra="--skip-technical --temp " + scratch_dir
     threads: 6  # defaults to 6
     resources:
         memory="64GB",

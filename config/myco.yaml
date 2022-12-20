@@ -162,3 +162,5 @@ rna_meta:
     title: 39h_2
     time: 39h
     replicate: 2
+
+scratch_dir: "/scratch"

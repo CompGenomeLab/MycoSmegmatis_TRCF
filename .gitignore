@@ -1,6 +1,10 @@
 **/.DS_Store
-.snakemake
-results
 **/*.err
 **/*.log
+**/*.lock
+**/*.prf
+**/*.tmp
+
+.snakemake
+results
 tmp
